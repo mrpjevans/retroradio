@@ -2,7 +2,7 @@ import gpiozero
 import time
 import threading
 
-class RotaryEncoder
+class RotaryEncoder:
 
   clk = None
   dt = None
@@ -11,6 +11,7 @@ class RotaryEncoder
   position = 0
   last_position = 0
   last_change_time = 0
+  overflow = 100
 
   def __init__(self, clk_pin, dt_pin, overflow):
     self.clk = gpiozero.DigitalInputDevice(clk_pin)
@@ -20,11 +21,13 @@ class RotaryEncoder
     self.position = 0
     self.last_position = 0
     self.last_change_time = int(time.time())
+    self.overflow = overflow
   
   def watch(self):
-    x = threading.Thread(target=self.read_encoder, args=(self,))
+    x = threading.Thread(target=self.__read_encoder, daemon=True)
+    x.start()
 
-  def read_encoder(self):
+  def __read_encoder(self):
 
     while True:
         
@@ -44,8 +47,8 @@ class RotaryEncoder
 
         self.last_position = self.position
         self.last_change_time = int(time.time())
-
-      self.clk_last_value = self.clk_value
-      self.dt_last_value = self.dt_value
-
+      
+      self.clk_last_value = clk_value
+      self.dt_last_value = dt_value
+      
       time.sleep(0.001)

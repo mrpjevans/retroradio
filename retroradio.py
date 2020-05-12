@@ -11,9 +11,9 @@ os.putenv('SDL_VIDEODRIVER', 'dummy')
 
 # Declare our 'stations'
 stations = [
-  Station('audio/1.ogg', 100),
+  Station('gtav/west_coast_classics.ogg', 4704),
   Station('audio/2.ogg', 100),
-  Station('audio/airplay.wav', 3, True, "airplay")
+  Station('audio/airplay.ogg', 4.5, True, "airplay")
 ]
 
 # Initialise everything
@@ -21,9 +21,9 @@ pygame.init()
 pygame.mixer.init()
 
 # Prep static channel and annoucements
-static_sound = pygame.mixer.Sound('audio/static.wav')
-activating_sound = pygame.mixer.Sound('audio/activating.wav')
-deactivating_sound = pygame.mixer.Sound('audio/deactivating.wav')
+static_sound = pygame.mixer.Sound('audio/static.ogg')
+activating_sound = pygame.mixer.Sound('audio/activating.ogg')
+deactivated_sound = pygame.mixer.Sound('audio/deactivated.ogg')
 
 # Start static playback
 static_channel = pygame.mixer.Sound.play(static_sound, loops=-1)
@@ -74,34 +74,47 @@ selector.watch()
 
 while True:
     
-    selector_position = selector.position
-    if selector_position != selector_last_position:
+    if selector.position != selector_last_position:
       #  Shutdown a special service and reset everything
       if stations[current_station].special_active:
         print('Deactivating %s' % stations[current_station].name)
         stations[current_station].special_active = False
-        selector_position = 0
+        
+        # Reset the tuning position
         selector.position = 0
         selector.last_position = -1
         current_station = -1
-        os.system('sudo service shairport-sync stop')
+        
+        # Stop the special service
+        if stations[current_station].name == 'airplay':
+          os.system('sudo service shairport-sync stop')
+
+        # Annouce deactivation then restart static channel
         pygame.mixer.init()
-        pygame.mixer.Sound.play(deactivating_sound)
+        pygame.mixer.Sound.play(deactivated_sound)
         time.sleep(1.5)
         static_channel = pygame.mixer.Sound.play(static_sound, loops=-1)
         
-      set_tuning(selector_position)
+      set_tuning(selector.position)
       selector_last_position = selector.position
     
     # When you've been set on a special station for over 5 seconds, activate
-    if stations[current_station].special and not stations[current_station].special_active and int(time.time()) - selector.last_change_time > 5:
+    elif stations[current_station].special and not stations[current_station].special_active and int(time.time()) - selector.last_change_time > 5:
+
+      # Announce chnage to special service
       print('Activating %s' % stations[current_station].name)
       stations[current_station].special_active = True
       pygame.mixer.music.stop()
       pygame.mixer.Sound.play(activating_sound)
       time.sleep(1.5)
-      os.system('sudo service shairport-sync start')
+
+      # Release resources
       pygame.mixer.quit()
 
+      # Start the special service
+      if stations[current_station].name == 'airplay':
+        os.system('sudo service shairport-sync start')
+
+      
     time.sleep(0.001)
 
