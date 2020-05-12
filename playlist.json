@@ -1,0 +1,24 @@
+[
+  {
+    "file": "example/the_lincolnshire_poacher.ogg",
+    "duration": 278
+  },
+  {
+    "file": "example/morse.ogg",
+    "duration": 190
+  },
+  {
+    "file": "example/two_voices.ogg",
+    "duration": 207
+  },
+  {
+    "file": "example/attencion.ogg",
+    "duration": 212
+  },
+  {
+    "file": "audio/airplay.ogg",
+    "duration": 4.5,
+    "special": true,
+    "name": "airplay"
+  }
+]

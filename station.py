@@ -8,11 +8,11 @@ class Station:
   special_active = False
   name = ""
 
-  def __init__(self, file, duration, special=False, name=""):
-    self.file = file
-    self.duration = duration
-    self.special = special
-    self.name = name
+  def __init__(self, playlist_item):
+    self.file = playlist_item['file']
+    self.duration = playlist_item['duration']
+    self.special = playlist_item['special'] if 'special' in playlist_item else False
+    self.name = playlist_item['name'] if 'name' in playlist_item else ""
     self.launch_time = int(time.time())
 
   def play(self, pygame):
