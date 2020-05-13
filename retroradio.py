@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import gpiozero
 import pygame
 import time
 from rotary import RotaryEncoder
@@ -53,7 +52,7 @@ def set_tuning(position):
   state.print_status()
 
   # Swap out the channel during fade in/out
-  if state.fading and current_station != state.station:
+  if current_station != state.station:
     stations[state.station].play(pygame)
     print("Changed active station to %s" % state.station)
     

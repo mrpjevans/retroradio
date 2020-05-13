@@ -12,8 +12,10 @@ class RotaryEncoder:
   last_position = 0
   last_change_time = 0
   overflow = 100
+  min_val = 0
+  max_val = 0
 
-  def __init__(self, clk_pin, dt_pin, overflow):
+  def __init__(self, clk_pin, dt_pin, overflow=None, min_val=None, max_val=None):
     self.clk = gpiozero.DigitalInputDevice(clk_pin)
     self.dt = gpiozero.DigitalInputDevice(dt_pin)
     self.clk_last_value = self.clk.value
@@ -22,6 +24,8 @@ class RotaryEncoder:
     self.last_position = 0
     self.last_change_time = int(time.time())
     self.overflow = overflow
+    self.min_val = min_val
+    self.max_val = max_val
   
   def watch(self):
     x = threading.Thread(target=self.__read_encoder, daemon=True)
@@ -38,12 +42,17 @@ class RotaryEncoder:
       if clk_value == 0 and dt_value == 1:
         if self.clk_last_value == 1 and self.dt_last_value == 1:
           self.position += 1
-          if self.position >= self.overflow:
+          if self.overflow and self.position >= self.overflow:
             self.position = 0 
         elif self.clk_last_value == 0 and self.dt_last_value == 0:
           self.position -= 1
-          if self.position <= -1:
+          if self.overflow and self.position <= -1:
             self.position += self.overflow
+
+        if self.min_val is not None and self.position < self.min_val:
+          self.position = self.min_val
+        if self.max_val is not None and self.position > self.max_val:
+          self.position = self.max_val
 
         self.last_position = self.position
         self.last_change_time = int(time.time())
