@@ -118,7 +118,8 @@ while True:
       # Start the special service
       if stations[state.station].name == 'airplay':
         os.system('sudo service shairport-sync start')
-
+      elif stations[state.station].name == 'shutdown':
+        os.system('sudo shutdown -h now')
       
     time.sleep(0.001)
 

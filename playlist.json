@@ -16,6 +16,12 @@
     "duration": 212
   },
   {
+    "file": "audio/shutdown.ogg",
+    "duration": 3.1,
+    "special": true,
+    "name": "shutdown"
+  },
+  {
     "file": "audio/airplay.ogg",
     "duration": 4.5,
     "special": true,
