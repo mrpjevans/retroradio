@@ -10,8 +10,11 @@ from playback_state import PlaybackState
 # Allows PyGame to run headless
 os.putenv('SDL_VIDEODRIVER', 'dummy')
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(dir_path)
+
 # Load the playlist (you can specify a playlist object on the command line)
-playlist_file = sys.argv[1] if len(sys.argv) > 1 else "playlist.json"
+playlist_file = sys.argv[1] if len(sys.argv) > 1 else dir_path + "/playlist.json"
 with open(playlist_file) as json_file:
     playlist = json.load(json_file)
 
@@ -25,9 +28,9 @@ pygame.init()
 pygame.mixer.init()
 
 # Prep static channel and annoucements
-static_sound = pygame.mixer.Sound('audio/static.ogg')
-activating_sound = pygame.mixer.Sound('audio/activating.ogg')
-deactivated_sound = pygame.mixer.Sound('audio/deactivated.ogg')
+static_sound = pygame.mixer.Sound(dir_path + '/audio/static.ogg')
+activating_sound = pygame.mixer.Sound(dir_path + '/audio/activating.ogg')
+deactivated_sound = pygame.mixer.Sound(dir_path + '/audio/deactivated.ogg')
 
 # Start static playback
 static_channel = pygame.mixer.Sound.play(static_sound, loops=-1)
