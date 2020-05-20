@@ -7,7 +7,7 @@ vol_control.watch()
 vol_last_position = 0
 
 # Set initial low volume
-os.system('amixer set Digital 20%')
+os.system('amixer set Digital 50%')
 
 while True:
   if vol_control.position != vol_last_position:
