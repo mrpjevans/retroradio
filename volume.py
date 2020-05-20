@@ -6,7 +6,8 @@ vol_control = RotaryEncoder(14, 15, min_val=0, max_val=20)
 vol_control.watch()
 vol_last_position = 0
 
-os.system('amixer set Digital 0%')
+# Set initial low volume
+os.system('amixer set Digital 20%')
 
 while True:
   if vol_control.position != vol_last_position:
