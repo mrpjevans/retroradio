@@ -4,7 +4,8 @@ from rotary import RotaryEncoder
 
 vol_control = RotaryEncoder(14, 15, min_val=0, max_val=20)
 vol_control.watch()
-vol_last_position = 0
+vol_last_position = 10
+vol_control.position = 10
 
 # Set initial low volume
 os.system('amixer set Digital 50%')
